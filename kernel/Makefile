@@ -18,7 +18,7 @@ C_INCLUDE_PATH?= ../libc/include:./include/kernel
 CFLAGS:=$(CFLAGS) -ffreestanding -fbuiltin -Wall -Wextra
 CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -I../libc/include -Iinclude
 LDFLAGS:=$(LDFLAGS)
-LIBS:=$(LIBS) -L$(HOME)/linux/myos/libc -lk -nostdlib -lgcc
+LIBS:=$(LIBS) -L$(HOME)/os/myos/libc -lk -nostdlib -lgcc
  
 ARCHDIR:=arch/$(HOSTARCH)
  

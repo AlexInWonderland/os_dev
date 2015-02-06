@@ -4,26 +4,32 @@
 #include <string.h>
  
 #include <kernel/vga.h>
+#include <kernel/common.h>
+#include <kernel/tty.h>
  
-size_t terminal_row;
-size_t terminal_column;
+size_t cury;
+size_t curx;
 uint8_t terminal_color;
-uint16_t* terminal_buffer;
+uint16_t* fb;
+
+static void move_cursor();
+static void scroll();
  
 void terminal_initialize(void)
 {
-	terminal_row = 0;
-	terminal_column = 0;
+	cury=0;
+	curx=0;
 	terminal_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
-	terminal_buffer = VGA_MEMORY;
+	fb=VGA_MEMORY;
 	for ( size_t y = 0; y < VGA_HEIGHT; y++ )
 	{
-		for ( size_t x = 0; x < VGA_WIDTH; x++ )
-		{
-			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = make_vgaentry(' ', terminal_color);
-		}
+	    for ( size_t x = 0; x < VGA_WIDTH; x++ )
+	    {
+		const size_t index = y * VGA_WIDTH + x;
+	    	fb[index]=make_vgaentry(' ', terminal_color); 
+	    }
 	}
+	move_cursor();
 }
  
 void terminal_setcolor(uint8_t color)
@@ -34,47 +40,35 @@ void terminal_setcolor(uint8_t color)
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 {
 	const size_t index = y * VGA_WIDTH + x;
-	terminal_buffer[index] = make_vgaentry(c, color);
+	fb[index]=make_vgaentry(c, color);
 }
  
 void terminal_putchar(char c)
 {
-	switch (c)
-	{
-	    case '\n':
-		terminal_column=0;
-		terminal_row++;
-		break;
-	    case '\r':
-		terminal_column++;
-		break;
-	    default:
-		if(terminal_row == VGA_HEIGHT)
-		{
-		     for(size_t x = 0 ; x < VGA_HEIGHT ; x++ )
-		     {
-			for(size_t y = 0; y < VGA_WIDTH; y++ )
-			{
-			    size_t index1 = x * VGA_WIDTH + y;
-			    size_t index2 = (x + 1)* VGA_WIDTH + y; 		
-			    terminal_buffer[index1]=terminal_buffer[index2];
-			}
-		     }
-		     terminal_row--;
-		     terminal_column = 0;	
-		}
-		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-		terminal_column++;
+	if (c==0x08 && curx)   //back space
+	{  
+	    curx--;
 	}
-	/*terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-	if ( ++terminal_column == VGA_WIDTH )
+        else if (c==0x09)
 	{
-		terminal_column = 0;
-		if ( ++terminal_row == VGA_HEIGHT )
-		{
-			terminal_row = 0;
-		}
-	}*/
+	    curx = (curx+8) & ~(8-1);
+	}
+	else if (c=='\r')
+	{
+	    curx = 0;
+	}
+	else if (c=='\n')
+	{
+ 	    curx=0;
+	    cury++;
+	}
+	else if(c>=' ')
+	{
+	  terminal_putentryat(c, terminal_color, curx, cury);
+	  curx++;
+	}
+        scroll();
+	move_cursor();
 }
  
 void terminal_write(const char* data, size_t size)
@@ -86,4 +80,33 @@ void terminal_write(const char* data, size_t size)
 void terminal_writestring(const char* data)
 {
 	terminal_write(data, strlen(data));
+}
+
+/*---scroll the terminal---*/
+static void scroll()
+{
+    if(cury >= VGA_HEIGHT)
+    {
+	for(size_t row = 0 ; row < VGA_HEIGHT ; row++ )
+	{
+	    for(size_t col = 0; col < VGA_WIDTH; col++ )
+	    {
+		size_t index1 = row * VGA_WIDTH + col;
+		size_t index2 = (row + 1)* VGA_WIDTH + col;
+	        fb[index1]=fb[index2];
+	    }
+	 }
+	 cury--;
+	 curx = 0;
+    }	
+} 
+
+/*---move the cursor----*/
+static void move_cursor()
+{
+    uint16_t cLoc = cury*80 + curx;
+    outb(0x3D4, 14);
+    outb(0x3D5, cLoc >> 8);
+    outb(0x3D4, 15);
+    outb(0x3D5, cLoc);
 }

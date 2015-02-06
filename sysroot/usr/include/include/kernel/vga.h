@@ -2,7 +2,6 @@
 #define _KERNEL_VGA_H
  
 #include <stdint.h>
- 
 enum vga_color
 {
 	COLOR_BLACK = 0,
@@ -34,7 +33,7 @@ static inline uint16_t make_vgaentry(char c, uint8_t color)
 	uint16_t color16 = color;
 	return c16 | color16 << 8;
 }
- 
+
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
  
