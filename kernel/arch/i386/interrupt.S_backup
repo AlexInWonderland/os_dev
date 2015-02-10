@@ -1,0 +1,101 @@
+.macro ISR_NOERRCODE a
+.global isr\a
+isr\a:
+  cli
+  push $0
+  push \a
+  jmp isr_common_stub
+.endm
+
+.macro ISR_ERRCODE a
+.global isr\a
+  isr\a:
+    cli
+    push \a
+    jmp isr_common_stub
+.endm
+
+
+ISR_NOERRCODE 0
+ISR_NOERRCODE 1
+ISR_NOERRCODE 2
+ISR_NOERRCODE 3
+ISR_NOERRCODE 4
+ISR_NOERRCODE 5
+ISR_NOERRCODE 6
+ISR_NOERRCODE 7
+ISR_ERRCODE   8
+ISR_NOERRCODE 9
+ISR_ERRCODE   10
+ISR_ERRCODE   11
+ISR_ERRCODE   12
+ISR_ERRCODE   13
+ISR_ERRCODE   14
+ISR_NOERRCODE 15
+ISR_NOERRCODE 16
+ISR_NOERRCODE 17
+ISR_NOERRCODE 18
+ISR_NOERRCODE 19
+ISR_NOERRCODE 20
+ISR_NOERRCODE 21
+ISR_NOERRCODE 22
+ISR_NOERRCODE 23
+ISR_NOERRCODE 24
+ISR_NOERRCODE 25
+ISR_NOERRCODE 26
+ISR_NOERRCODE 27
+ISR_NOERRCODE 28
+ISR_NOERRCODE 29
+ISR_NOERRCODE 30
+ISR_NOERRCODE 31
+
+#extern isr_handler
+isr_common_stub:
+ //   ;pusha                  ;   Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+    push %edi
+    push %esi
+    push %ebp
+    push %esp
+    push %ebx
+    push %edx
+    push %ecx
+    push %eax
+ //  ; mov ax, ds               ; Lower 16-bits of eax = ds.
+    mov %ds, %ax
+ //   ;push eax                 ; save the data segment descriptor
+    push %eax  
+ //   ;mov ax, 0x10  ; load the kernel data segment descriptor
+    mov $0x10, %ax
+ //   ;mov ds, ax
+    mov %ax, %ds
+ //   ;mov es, ax
+    mov %ax, %es
+ //   ;mov fs, ax
+    mov %ax, %fs
+ //   ;mov gs, ax
+    mov %ax, %gs
+    call isr_handler
+
+ //   ;pop ebx        ; reload the original data segment descriptor
+    pop %ebx
+ //   ;mov ds, bx
+    mov %bx, %ds 
+ //   ;mov es, bx
+    mov %bx, %es
+ //   ;mov fs, bx
+    mov %bx, %fs
+ //   ;mov gs, bx
+    mov %bx, %gs
+ //   ;popa                     ; Pops edi,esi,ebp...
+    pop %eax
+    pop %ecx
+    pop %edx
+    pop %ebx
+    pop %esp
+    pop %ebp
+    pop %esi
+    pop %edi
+ //   ;add esp, 8     ; Cleans up the pushed error code and pushed ISR number
+    add $8, %esp
+   // sti
+   iret          // ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP

@@ -15,9 +15,10 @@ BOOTDIR?=$(EXEC_PREFIX)/boot
 INCLUDEDIR?=$(PREFIX)/
 C_INCLUDE_PATH?= ../libc/include:./include/kernel
  
-CFLAGS:=$(CFLAGS) -ffreestanding -fbuiltin -Wall -Wextra
+CFLAGS:=$(CFLAGS) -ffreestanding -fbuiltin -Wall -Wextra -m32
+#CFLAGS:= $(CFLAGS) -ffreestanding -fbuiltin -Wall -Wextra -nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
 CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -I../libc/include -Iinclude
-LDFLAGS:=$(LDFLAGS)
+LDFLAGS:=$(LDFLAGS) -m32
 LIBS:=$(LIBS) -L$(HOME)/os/myos/libc -lk -nostdlib -lgcc
  
 ARCHDIR:=arch/$(HOSTARCH)
@@ -54,7 +55,7 @@ all: myos.kernel
 .PHONY: all clean install install-headers install-kernel
  
 myos.kernel: $(OBJ_LINK_LIST) $(ARCHDIR)/linker.ld
-	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(OBJ_LINK_LIST) $(LDFLAGS) $(LIBS)
+	$(CC) -T $(ARCHDIR)/linker.ld -m32 -o $@ $(CFLAGS) $(OBJ_LINK_LIST) $(LDFLAGS) $(LIBS)
  
 #boot.o:boot.S
 #	$(AS) -o $(BOOT_OBJ) boot.S	

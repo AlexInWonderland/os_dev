@@ -5,7 +5,9 @@
  
 #include <kernel/tty.h>
 #include <kernel/vga.h>
-#include<kernel/common.h>
+#include <kernel/common.h>
+#include <kernel/idt.h>
+#include <kernel/gdt.h>
  
 void kernel_early(void)
 {
@@ -14,12 +16,15 @@ void kernel_early(void)
  
 void kernel_main(void)
 {
-
-        for(size_t x=0 ; x < VGA_HEIGHT ; x++)
-	   printf("Hello, kernel World!\n");
-//	printf("Alex is here!\n");
-//	printf("Alex is there!\r");
-	printf("AAA\n");
-	printf("BBB!!");
-        //while(1);
+   init_gdt();
+  // isrs_install();
+   init_idt();
+   int a=5;
+   int b=451;
+//   char* ab="abcd";
+    printf("a:%d",b);
+    //printf("1");
+   asm volatile("int $0x0");
+   asm volatile("int $0x3");
+   asm volatile("int $0x9");
 }

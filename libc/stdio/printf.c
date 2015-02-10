@@ -61,6 +61,35 @@ int printf(const char* restrict format, ...)
 			const char* s = va_arg(parameters, const char*);
 			print(s, strlen(s));
 		}
+                else if (*format == 'd' )   //print integer
+                {
+                       format++;
+                       int x = va_arg(parameters, int);
+                       if(x == 0)
+                       {
+                           char c='0';
+                           print(&c,sizeof(c));
+                           continue;
+                       }
+                       char c1[32];
+                       int j1=0;
+                       while(x > 0)
+                       {
+                          c1[j1++] = '0'+ (x%10);
+                          x = x/10;   
+                       }
+                       //c1[j1]=0; 
+            
+                       char c2[32];
+                       c2[j1--]=0;
+                       int j2 = 0;
+                       while(j1 >= 0)
+                       {
+                          c2[j2++] = c1[j1--];
+                       } 
+                       c2[j2]=0;
+                       print(c2,strlen(c2));
+                }
 		else
 		{
 			goto incomprehensible_conversion;
