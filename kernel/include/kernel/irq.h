@@ -1,6 +1,7 @@
 #ifndef _KERNEL_IRQ_H
 #define _KERNEL_IRQ_H
 #include <stdint.h>
+
 extern void irq0();
 extern void irq1();
 extern void irq2();
@@ -17,5 +18,7 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+
+extern void irq_install_handler(int irq, void (*handler)(struct regs *r));
 
 #endif

@@ -60,9 +60,7 @@ void terminal_putchar(char c)
 	else if (c=='\n')
 	{
  	    curx=0;
-	    cury++;
-            if(cury >= VGA_HEIGHT)
- 	        scroll();
+	    cury++;     
 	}
 	else if(c>=' ')
 	{

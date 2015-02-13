@@ -9,32 +9,26 @@
 #include <kernel/idt.h>
 #include <kernel/gdt.h>
 #include <kernel/timer.h>
+#include <kernel/key.h>
  
 void kernel_early(void)
 {
 	terminal_initialize();
 }
- 
-void kernel_main(void)
+
+static void kernel_init()
 {
    init_gdt();
    init_idt();
    irq_install();
    timer_install();
-   asm volatile("sti");
-   printf("hello world!!\n");
+   keyboard_install();
+   asm volatile("sti");    //this is a must-do
+}
+ 
+void kernel_main(void)
+{
+   kernel_init();
+   printf("[Alex's Hobby OS]:");
    while(1);
-//   int i=10/0;
-//   printf("%d",i);
- //  asm volatile("int $0x0");
- //  asm volatile("int $35");
- //  asm volatile("int $0x2");
- //  asm volatile("int $0x3");
- //  asm volatile("int $0x4");
- //  asm volatile("int $0x5");
- //  asm volatile("int $0x6");
- //  asm volatile("int $0x7");
- //  asm volatile("int $14");
-   //asm volatile("int $0x3");
-  // asm volatile("int $0x9");
 }

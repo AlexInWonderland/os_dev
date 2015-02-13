@@ -4,6 +4,8 @@
 *
 *  Notes: No warranty expressed or implied. Use at own risk. */
 #include <kernel/timer.h>
+#include <kernel/irq.h>
+#include <include/stdio.h>
 /* This will keep track of how many ticks that the system
 *  has been running for */
 int timer_ticks = 0;
@@ -22,7 +24,7 @@ void timer_handler(struct regs *r)
     *  display a message on the screen */
     if (timer_ticks % 18 == 0)
     {
-        puts("One second has passed\n");
+       // puts("One second has passed!");    
     }
 }
 
