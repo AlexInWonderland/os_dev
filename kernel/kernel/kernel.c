@@ -8,6 +8,7 @@
 #include <kernel/common.h>
 #include <kernel/idt.h>
 #include <kernel/gdt.h>
+#include <kernel/timer.h>
  
 void kernel_early(void)
 {
@@ -17,14 +18,23 @@ void kernel_early(void)
 void kernel_main(void)
 {
    init_gdt();
-  // isrs_install();
    init_idt();
-   int a=5;
-   int b=451;
-//   char* ab="abcd";
-    printf("a:%d",b);
-    //printf("1");
-   asm volatile("int $0x0");
-   asm volatile("int $0x3");
-   asm volatile("int $0x9");
+   irq_install();
+   timer_install();
+   asm volatile("sti");
+   printf("hello world!!\n");
+   while(1);
+//   int i=10/0;
+//   printf("%d",i);
+ //  asm volatile("int $0x0");
+ //  asm volatile("int $35");
+ //  asm volatile("int $0x2");
+ //  asm volatile("int $0x3");
+ //  asm volatile("int $0x4");
+ //  asm volatile("int $0x5");
+ //  asm volatile("int $0x6");
+ //  asm volatile("int $0x7");
+ //  asm volatile("int $14");
+   //asm volatile("int $0x3");
+  // asm volatile("int $0x9");
 }

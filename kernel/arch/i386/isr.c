@@ -76,19 +76,11 @@ void isrs_install()
 
 void fault_handler(struct regs *r)
 {
-        //while(1){}
-	/* Is this a fault whose number is from 0 to 31? */
 	if (r->int_no < 32)
 	{
-            printf("recieved interrupt: %d\n", r->int_no);
-		/* Display the description for the Exception that occurred.
-		*  In this tutorial, we will simply halt the system using an
-		*  infinite loop */
-		//kputs(exception_messages[r->int_no]);
-		//kputs(" Exception. System Halted!\n");
-		//kabort();
+            printf("%s\n", exception_messages[r->int_no]);
+            printf("System halted!\n");
+            while(1)
+            ;   
 	}
-	//This should never happen.
-	//kputs("ERROR UNEXPECTED INTERRUPT!\n");
-	//kabort();
 }

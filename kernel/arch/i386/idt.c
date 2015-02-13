@@ -1,8 +1,7 @@
 #include <stdint.h>
 #include <kernel/idt.h>
 #include <include/string.h>
-extern void _idt_flush(uint32_t);
-static void idt_set_gate(uint8_t, uint32_t, uint16_t, uint8_t);
+void idt_set_gate(uint8_t, uint32_t, uint16_t, uint8_t);
 
 idt_entry_t idt_entries[256];
 idt_ptr_t idt_ptr;
@@ -47,12 +46,11 @@ void init_idt()
    idt_set_gate(30, (uint32_t)isr30, 0x08, 0x8E);
    idt_set_gate(31, (uint32_t)isr31, 0x08, 0x8E);
 
-   //_idt_flush((uint32_t)&idt_ptr);
     idt_load();
 
 } 
 
-static void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
+void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
 {
    idt_entries[num].base_lo = base & 0xFFFF;
    idt_entries[num].base_hi = (base >> 16) & 0xFFFF;

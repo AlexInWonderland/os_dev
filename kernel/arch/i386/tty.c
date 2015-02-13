@@ -10,7 +10,7 @@
 size_t cury;
 size_t curx;
 uint8_t terminal_color;
-uint16_t* fb;
+uint16_t* fb;    //frame buffer
 
 static void move_cursor();
 static void scroll();
@@ -61,6 +61,8 @@ void terminal_putchar(char c)
 	{
  	    curx=0;
 	    cury++;
+            if(cury >= VGA_HEIGHT)
+ 	        scroll();
 	}
 	else if(c>=' ')
 	{

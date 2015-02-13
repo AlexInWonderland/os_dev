@@ -31,8 +31,6 @@
 .global isr30
 .global isr31
 
-
-
 #Division By Zero Exception
 isr0:
 	cli
@@ -89,6 +87,7 @@ isr8:
 #Coprocessor Segment Overrun Exception
 isr9:
 	cli
+        push $0x0 
 	push $9
 	jmp isr_common_stub
 #Bad TSS Exception
@@ -119,88 +118,107 @@ isr14:
 #Unknown Interrupt Exception
 isr15:
 	cli
+        push $0
 	push $15
 	jmp isr_common_stub
 #Coprocessor Fault Exception
 isr16:
 	cli
+        push $0
 	push $16
 	jmp isr_common_stub
 #Alignment Check Exception (486+)
 isr17:
 	cli
+        push $0  
 	push $17
 	jmp isr_common_stub
 #Machine Check Exception (Pentium/586+)
 isr18:
 	cli
+        push $0
 	push $18
 	jmp isr_common_stub
 #Reserved Exceptions
 isr19:
 	cli
+        push $0
 	push $19
 	jmp isr_common_stub
 #Reserved Exceptions
 isr20:
 	cli
+        push $0
 	push $20
 	jmp isr_common_stub
 #Reserved Exceptions
 isr21:
 	cli
+        push $0 
 	push $21
 	jmp isr_common_stub
 #Reserved Exceptions
 isr22:
 	cli
+        push $0
 	push $22
 	jmp isr_common_stub
 #Reserved Exceptions
 isr23:
 	cli
+        push $0
 	push $23
 	jmp isr_common_stub
 #Reserved Exceptions
 isr24:
 	cli
+        push $0
 	push $24
 	jmp isr_common_stub
 #Reserved Exceptions
 isr25:
 	cli
+        push $0
 	push $25
 	jmp isr_common_stub
 #Reserved Exceptions
 isr26:
 	cli
+        push $0
 	push $26
 	jmp isr_common_stub
 #Reserved Exceptions
 isr27:
 	cli
+        push $0
 	push $27
 	jmp isr_common_stub
 #Reserved Exceptions
 isr28:
 	cli
+        push $0
 	push $28
 	jmp isr_common_stub
 #Reserved Exceptions
 isr29:
 	cli
+        push $0
 	push $29
 	jmp isr_common_stub
 #Reserved Exceptions
 isr30:
 	cli
+        push $0
 	push $30
 	jmp isr_common_stub
 #Reserved Exceptions
 isr31:
 	cli
+        push $0
 	push $31
 	jmp isr_common_stub
+
+
 
 .extern fault_handler
 
@@ -217,15 +235,8 @@ isr_common_stub:
     mov %ax, %gs
     mov %esp, %eax
     push %eax 
- #   mov $fault_handler, %eax
- #   call %eax
     call fault_handler
     pop %eax
-  #  pop %eax
-   # mov %ax, %ds
-   # mov %ax, %es
-   # mov %ax, %fs
-   # mov %ax, %gs
     pop %gs
     pop %fs
     pop %es
@@ -233,4 +244,4 @@ isr_common_stub:
     popa
     add $8, %esp
    # sti
-    iret   
+    iret 

@@ -1,7 +1,8 @@
 #ifndef _KERNEL_IDT_H
 #define _KERNEL_IDT_H
-
+#include <stdint.h>
 void init_idt();
+void idt_set_gate(uint8_t, uint32_t, uint16_t,uint8_t);
 struct idt_entry
 {
    uint16_t base_lo;
