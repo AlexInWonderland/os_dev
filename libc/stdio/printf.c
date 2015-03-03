@@ -61,6 +61,73 @@ int printf(const char* restrict format, ...)
 			const char* s = va_arg(parameters, const char*);
 			print(s, strlen(s));
 		}
+                else if (*format == 'i')  // hex
+                {
+                        format++;
+                        int x = va_arg(parameters, int);
+                        char c='0'; 
+                        print(&c, sizeof(c));
+                        c= 'x';
+                        print(&c, sizeof(c));
+                        if(x==0)
+                        {
+                           c='0';
+                           print(&c, sizeof(c));
+                           continue;
+                        }
+                        int i=0;
+                        char c1[32];
+                        while(x>0)
+                        {
+                           c1[i++] = x % 16;
+                           x /= 16;
+                        } 
+                      //  i--;
+                        while((--i) >= 0)
+                        {
+                          switch (c1[i])
+                          {
+                             case 0:
+                             case 1:
+                             case 2:
+                             case 3:
+                             case 4:
+                             case 5:
+                             case 6:
+                             case 7:
+                             case 8:
+                             case 9:
+                                c ='0' + c1[i];
+                                print(&c, sizeof(c));
+                                break;
+                             case 10:
+                                c='A';  
+                                print(&c, sizeof(c));
+                                break;
+                             case 11:
+                                c='B';
+                                print(&c, sizeof(c));
+                                break;
+                             case 12:
+                                c='C';
+                                print(&c, sizeof(c));
+                                break;
+                             case 13:
+                                c='D';
+                                print(&c, sizeof(c));
+                                break;
+                             case 14:
+                                c='E';
+                                print(&c,sizeof(c));
+                                break;
+                             case 15:
+                                c='F';
+                                print(&c, sizeof(c));
+                                break;
+                          }
+                          //i--;
+                        }                                               
+                }
                 else if (*format == 'd' )   //print integer
                 {
                        format++;

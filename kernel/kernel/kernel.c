@@ -29,6 +29,11 @@ static void kernel_init()
 void kernel_main(void)
 {
    kernel_init();
-   printf("[Alex's Hobby OS]:");
+   task_tty();
+//   printf("%i\n", 251);
+//   printf("%i\n", 252);
+//   printf("%i\n",253);
+//   printf("%i\n", 254);
+//   printf("%i\n", 255);
    while(1);
 }
